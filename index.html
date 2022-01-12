@@ -1,11 +1,84 @@
 <html>
   <head>
-    <meta charset="UTF-8">
-    <script src="script.js"></script>
+    <meta charset="UTF-8" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/460/fabric.min.js"
+      integrity="sha512-ybPp3kCrNQXdvTfh99YLIdnajWnQvHuEKDJ+b26mxI9w+pLhnBo3HmNLJ1pEUBFO1Q0bfJxApeqecNbmaV763g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
     <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
   </head>
+
   <body>
-    <h1>Hello there!</h1>
-    <a href="/me.html">My other page</a>
+    <div>
+      <input type="button" value="Add Text" onclick="addCurveText(this)" />
+      <input type="button" value="To Normal" onclick="toNormalText(this)" />
+      <input type="button" value="To Curve" onclick="toCurveText(this)" />
+      <input
+        type="range"
+        step="1"
+        min="12"
+        max="200"
+        onchange="fontChange(this)"
+      />
+    </div>
+    <canvas id="c" width="500" height="500" />
+    <script src="script.js"></script>
+    <script>
+      var maintext;
+      function fontChange(e) {
+        console.log(e.value);
+        var text = canvas.getObjects().find((item) => item.type == 'text');
+        text.set({ fontSize: e.value });
+        canvas.renderAll();
+      }
+
+      function toNormalText(e) {
+        maintext.set({ curve: false });
+
+        canvas.renderAll();
+      }
+
+      function toCurveText(e) {
+        // const maintext = canvas.getActiveObject()
+        // if(maintext){
+        //   maintext.set({curve: true})
+        //   canvas.renderAll()
+        // }
+
+        const maintextM = canvas.getActiveObject();
+        if (maintextM.type == 'curveText') {
+          //maintext.set({curve: true})
+          canvas.remove(maintextM);
+          if (canvas) {
+            const maintext = new fabric.CurveText(maintextM.text, {
+              canvas: canvas,
+              left: maintextM.left,
+              top: maintextM.top,
+              fontSize: maintextM.fontSize,
+              fontFamily: maintextM.fontFamily,
+              color: maintextM.color,
+              width: maintextM.width,
+            });
+            canvas.add(maintext);
+          }
+          canvas.renderAll();
+        }
+      }
+
+      function addCurveText() {
+        maintext = new fabric.CurveText('Hello Deepak', {
+          left: 100,
+          top: 200,
+          canvas: canvas,
+        });
+
+        if (canvas) {
+          canvas.add(maintext);
+        }
+      }
+    </script>
   </body>
 </html>
